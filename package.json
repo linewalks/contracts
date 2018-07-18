@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/mcidl/contracts/issues"
   },
-  "homepage": "https://github.com/mcidl/contracts#readme"
+  "homepage": "https://github.com/mcidl/contracts#readme",
+  "dependencies": {
+    "babel-register": "^6.26.0"
+  }
 }
