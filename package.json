@@ -21,7 +21,8 @@
     "url": "https://github.com/mcidl/contracts/issues"
   },
   "homepage": "https://github.com/mcidl/contracts#readme",
-  "devDependencies": {
+  "dependencies": {
+    "babel-register": "^6.26.0",
     "concurrently": "^3.6.0"
   }
 }
