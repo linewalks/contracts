@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 contract PatientRegistrar {
     struct Patient {
         uint yearOfBirth;
-        bytes32 gender;
+        string gender;
         bool isInitialized;
     }
 
@@ -17,13 +17,15 @@ contract PatientRegistrar {
         admin = msg.sender;
     }
 
-    function registerPatientToRegistrar(address patient, bytes32 gender, uint yearOfBirth) public {
+    function registerPatientToRegistrar(address patient, string gender, uint yearOfBirth) public {
+        /*
         require(
             msg.sender == admin,
             "Only admin can add patient to network"
         );
+        */
         require(
-            patients[patient].isInitialized,
+            !patients[patient].isInitialized,
             "Patient already exists"
         );
         patients[patient].gender = gender;
