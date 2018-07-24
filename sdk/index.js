@@ -36,31 +36,23 @@ class SDK {
       const contractJsonInterface = fs.readFileSync(pathToContract)
       const { abi, bytecode } = JSON.parse(contractJsonInterface)
       const ContractToDeploy = new this.web3.eth.Contract(abi)
-      return (
-        ContractToDeploy.deploy({
-          data: bytecode
+      return ContractToDeploy.deploy({
+        data: bytecode
+      })
+        .send({
+          from: fromAddress,
+          gas,
+          gasPrice
         })
-          .send({
-            from: fromAddress,
-            gas,
-            gasPrice
-          })
-          .on("error", function(error) {
-            console.error(error)
-          })
-          .on("transactionHash", function(transactionHash) {
-            console.log(transactionHash)
-          })
-          // .on("receipt", function(receipt) {
-          //   console.log(receipt.contractAddress) // contains the new contract address
-          // })
-          // .on("confirmation", function(confirmationNumber, receipt) {
-          //   console.log(confirmationNumber)
-          // })
-          .then(function(newContractInstance) {
-            return Promise.resolve(newContractInstance)
-          })
-      )
+        .on("error", function(error) {
+          console.error(error)
+        })
+        .on("transactionHash", function(transactionHash) {
+          console.log(`Pending Transaction #: ${transactionHash}\n`)
+        })
+        .then(function(newContractInstance) {
+          return Promise.resolve(newContractInstance.options.address)
+        })
     } catch (e) {
       console.error("Error while creating contract: " + e)
     }
