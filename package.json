@@ -27,6 +27,7 @@
     "web3": "git+https://github.com/ethereum/web3.js.git#newAbiLib"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0"
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2017": "^6.24.1"
   }
 }
