@@ -13,19 +13,6 @@ class SDK {
     )
   }
 
-  checkStatus() {
-    console.log(this.host)
-  }
-
-  createContract(pathToContract) {
-    try {
-      const contractJsonInterface = fs.readFileSync(pathToContract)
-      return new this.web3.eth.Contract(JSON.parse(contractJsonInterface).abi)
-    } catch (e) {
-      console.error("Error while creating contract: " + e)
-    }
-  }
-
   deployContract(
     pathToContract,
     fromAddress,
