@@ -48,7 +48,9 @@ class SDK {
           console.error(error)
         })
         .on("transactionHash", function(transactionHash) {
-          console.log(`Pending Transaction #: ${transactionHash}\n`)
+          console.log(
+            `Deploying Contract... Pending as tx#: ${transactionHash}\n`
+          )
         })
         .then(function(newContractInstance) {
           return Promise.resolve(newContractInstance.options.address)
