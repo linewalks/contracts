@@ -24,10 +24,12 @@ contract PatientRegistrar {
             "Only admin can add patient to network"
         );
         */
-        require(
-            !patients[patient].isInitialized,
-            "Patient already exists"
-        );
+      
+        // require(
+        //     !patients[patient].isInitialized,
+        //     "Patient already exists"
+        // );
+        
         patients[patient].gender = gender;
         patients[patient].yearOfBirth = yearOfBirth;
         patients[patient].isInitialized = true;
