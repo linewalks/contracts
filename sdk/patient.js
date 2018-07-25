@@ -1,13 +1,19 @@
 const Web3 = require("web3")
 const fs = require("fs")
 
+const gas = 167540
+const gasPrice = "10000000000"
+// const gas = 18000500
+// const gasPrice = "15000000000"
+
 // Built PatientRegistrar Contract
 const PatientRegistrarContract = fs.readFileSync(
   "./build/contracts/PatientRegistrar.json"
 )
 const PatientRegistrarContractABI = JSON.parse(PatientRegistrarContract).abi
+
 class PatientSDK {
-  connect({ networkConfig, patientRegistrarContractTx }) {
+  connect({ networkConfig, patientRegistrarContractTx, connectAs }) {
     /**
      * Connect to network
      * If patient contract is already created
@@ -22,32 +28,53 @@ class PatientSDK {
     if (!patientRegistrarContractTx) {
       throw new Error("No Patient Registrar Address Provided")
     }
-    this.patientRegistrarRef = patientRegistrarContractTx
+    this.patientRegistrarContractTx = patientRegistrarContractTx
+    this.connectAs = connectAs
 
-    this.connection = new Web3(
-      new Web3.providers.HttpProvider(`${host}/${port}`)
-    )
-    this.patientRegistrarRef = new this.connection.eth.Contract(
-      PatientRegistrarContractABI
+    this.web3 = new Web3(new Web3.providers.HttpProvider(`${host}:${port}`))
+    this.patientRegistrarRef = new this.web3.eth.Contract(
+      PatientRegistrarContractABI,
+      patientRegistrarContractTx,
+      { from: connectAs }
     )
   }
 
-  createPatient({ payload }) {
+  createPatient({ address, yearOfBirth, gender }) {
     /**
-     *
+     * Create Patient and adds it to PatientRegistrar
      */
+    console.log(`Adding patient with yob: ${yearOfBirth}, gender: ${gender}`)
+
+    return this.patientRegistrarRef.methods
+      .registerPatientToRegistrar(address, gender, yearOfBirth)
+      .send({
+        from: this.connectAs, // PatientRegistrar가 추가,
+        gas,
+        gasPrice
+      })
+      .then(
+        resp => {
+          console.log(
+            `Successfully added Patient with tx hash ${resp.transactionHash}`
+          )
+        },
+        e => console.log(e)
+      )
   }
 
   /**
    * Get All Patients in network
    */
   getAllPatients() {
-    this.patientRegistrarRef.methods
+    return this.patientRegistrarRef.methods
       .viewPatientsList()
       .call()
-      .then(resp => {
-        console.log(JSON.stringify(resp))
-      })
+      .then(
+        resp => {
+          console.log(JSON.stringify(resp))
+        },
+        e => console.log(e)
+      )
   }
 
   getPatient() {
