@@ -8,15 +8,20 @@ const sdk = new SDK()
 // )
 
 module.exports = {
-  patientRegistrar: ethAddress => {
+  patientRegistrar: adminAddr => {
     // Deploy patientRegistrar contracts
     return sdk.deployContract(
       "./build/contracts/PatientRegistrar.json",
-      ethAddress
+      adminAddr
     )
   },
-  provider: () => {
+  provider: (providerAddr, facilityName) => {
     // Deploy provider contracts
+    return sdk.deployContract(
+      "./build/contracts/Provider.json",
+      providerAddr,
+      [providerAddr, facilityName] // arguments for constructor
+    )
   },
   claim: () => {
     // Deploy claim contracts
