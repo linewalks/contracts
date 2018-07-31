@@ -1,10 +1,8 @@
 const Web3 = require("web3")
 const fs = require("fs")
+const config = require("../config")
 
-const gas = 167540
-const gasPrice = "10000000000"
-// const gas = 18000500
-// const gasPrice = "15000000000"
+const { gas, gasPrice, adminAddress, httpProvider } = config
 
 // Built PatientRegistrar Contract
 const PatientRegistrarContract = fs.readFileSync(
@@ -31,7 +29,7 @@ class PatientSDK {
     this.patientRegistrarContractTx = patientRegistrarContractTx
     this.connectAs = connectAs
 
-    this.web3 = new Web3(new Web3.providers.HttpProvider(`${host}:${port}`))
+    this.web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
     this.patientRegistrarRef = new this.web3.eth.Contract(
       PatientRegistrarContractABI,
       patientRegistrarContractTx,
