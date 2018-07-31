@@ -16,6 +16,7 @@ class SDK {
   deployContract(
     pathToContract,
     fromAddress,
+    args,
     gas = 1500000,
     gasPrice = "20000000000"
   ) {
@@ -24,7 +25,8 @@ class SDK {
       const { abi, bytecode } = JSON.parse(contractJsonInterface)
       const ContractToDeploy = new this.web3.eth.Contract(abi)
       return ContractToDeploy.deploy({
-        data: bytecode
+        data: bytecode,
+        arguments: args
       })
         .send({
           from: fromAddress,
