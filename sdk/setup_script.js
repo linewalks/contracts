@@ -1,15 +1,18 @@
 const SDK = require("./index.js")
 const sdk = new SDK()
 
+// Settings for deploying contracts
 const ethAddress = "0xe77541c7fe95e525120e5dad3bdb430a803b5ef4"
 const gas = 1500000
 const gasPrice = "20000000000"
 
+// Initialize PatientRegistrar Contract
 const PatientRegistrarContract = sdk.deployContract(
   "./build/contracts/PatientRegistrar.json",
   ethAddress
 )
 
+// Add Patient to PatientRegistart
 PatientRegistrarContract.then(contract => {
   return contract.methods
     .viewPatientsList()
