@@ -31,10 +31,31 @@ class ProviderSDK {
 
     this.web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
     this.providerContractRef = new this.web3.eth.Contract(
-      PatientRegistrarContractABI,
+      ProviderContractABI,
       providerContractTx,
       { from: connectAs }
     )
+  }
+
+  issueClaimForPatient(patientAddr, { type, cost, description }) {
+    console.log(`Issuing Claim for Patient Addr: ${patientAddr}`)
+    return this.providerContractRef.methods
+      .renderClaimForPatient(patientAddr, [type, cost, description])
+      .send({
+        from: this.connectAs,
+        gas,
+        gasPrice
+      })
+      .then(
+        resp => {
+          console.log(
+            `Successfully issued claim for Patient with tx hash ${
+              resp.transactionHash
+            }`
+          )
+        },
+        e => console.log(e)
+      )
   }
 }
 
