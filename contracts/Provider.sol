@@ -29,6 +29,10 @@ contract Provider {
         facilityName = _facilityName;
     }
 
+    function viewIssuedClaims() public view returns (IssuedClaim[] _claims) {
+        _claims = claims;
+    }
+
     function renderClaimForPatient(address patient, ClaimItem _claim) public {
         claims.push(IssuedClaim({
             patientAddr: patient,

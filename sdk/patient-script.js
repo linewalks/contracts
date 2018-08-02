@@ -1,24 +1,21 @@
+const Web3 = require("web3")
+
 const PatientSDK = require("./patient")
 const deploy = require("./deploy")
-const Web3 = require("web3")
+const config = require("../config")
+
+const { adminAddress, httpProvider } = config
 
 const psdk = new PatientSDK()
 
 // Check if network is up and running
-
-// Default config to use the network
-// Should be replaced with actual addresses
-const ethAddress = "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1"
-
 // Deploy all related contracts
 
 async function script() {
-  const web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:8545")
-  )
+  const web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
   let contractAddr
   try {
-    contractAddr = await deploy.patientRegistrar(ethAddress)
+    contractAddr = await deploy.patientRegistrar(adminAddress)
   } catch (e) {
     console.log(e)
   }
@@ -30,7 +27,7 @@ async function script() {
       port: 8545,
       networkId: "*"
     },
-    connectAs: ethAddress,
+    connectAs: adminAddress,
     patientRegistrarContractTx: contractAddr
   })
   // console.log(web3.eth.accounts)
@@ -71,5 +68,23 @@ async function script() {
     console.log(e)
   }
 }
+
+// // Create Providers
+// const a = providerSDK.createProvider("피부과", address)
+// const b = providerSDK.createProvider("소아청소년과", address)
+// const c = providerSDK.createProvider("정형외과", address)
+// const d = providerSDK.createProvider("산부인과", address)
+
+// // Issue claims for patients
+// const claims = [
+//   { type: "medical_procedure", cost: 44300, name: "C101" },
+//   { type: "medical_procedure", cost: 14300, name: "D101" },
+//   { type: "component", cost: 24300, name: "A10133432" }
+// ]
+
+// a.issueClaim(patientAddr1, claims)
+// a.issueClaim(patientAddr2, claims)
+// a.issueClaim(patientAddr3, claims)
+// a.issueClaim(patientAddr4, claims)
 
 script()
