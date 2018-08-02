@@ -5,6 +5,8 @@ const config = require("../config")
 
 const { adminAddress, httpProvider } = config
 
+const testAddr = adminAddress
+
 async function deployProviderContract(address, name) {
   const web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
   let contractAddr
@@ -16,9 +18,46 @@ async function deployProviderContract(address, name) {
   return contractAddr
 }
 
-const providerSDK = new ProviderSDK()
-console.log(adminAddress)
-const contractAddr = deployProviderContract(adminAddress, "BCD").then(
-  res => console.log(res),
-  err => console.log(err)
-)
+async function testScript() {
+  const providerSDK = new ProviderSDK()
+
+  const contractAddr = await deployProviderContract(
+    adminAddress,
+    "CDE Hospital"
+  )
+
+  console.log(`Provider Contract deployed: ${contractAddr}`)
+
+  providerSDK.connect({
+    networkConfig: {
+      host: "http://localhost",
+      port: 8545,
+      networkId: "*"
+    },
+    connectAs: adminAddress,
+    providerContractTx: contractAddr
+  })
+
+  await providerSDK.issueClaimForPatient(testAddr, {
+    type: "component",
+    cost: 5430,
+    description: "A0010101"
+  })
+
+  await providerSDK.issueClaimForPatient(testAddr, {
+    type: "component",
+    cost: 12430,
+    description: "B0021141"
+  })
+
+  await providerSDK.issueClaimForPatient(testAddr, {
+    type: "component",
+    cost: 42430,
+    description: "C0021141"
+  })
+
+  const claims = await providerSDK.getAllIssuedClaims()
+  console.log(claims)
+}
+
+testScript()
