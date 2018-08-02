@@ -37,6 +37,39 @@ class ProviderSDK {
     )
   }
 
+  getAllIssuedClaims() {
+    console.log(
+      `Fetching all claims issued by provider ${this.providerContractTx}`
+    )
+    return this.providerContractRef.methods
+      .viewIssuedClaims()
+      .call()
+      .then(
+        resp => {
+          const claims = resp.map(claim => {
+            const [
+              type,
+              cost,
+              description,
+              patientAddr,
+              createdAt,
+              isValidated
+            ] = claim
+            return {
+              type,
+              cost,
+              description,
+              patientAddr,
+              createdAt,
+              isValidated
+            }
+          })
+          return Promise.resolve(claims)
+        },
+        err => console.log(err)
+      )
+  }
+
   issueClaimForPatient(patientAddr, { type, cost, description }) {
     console.log(`Issuing Claim for Patient Addr: ${patientAddr}`)
     return this.providerContractRef.methods
