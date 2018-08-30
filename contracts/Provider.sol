@@ -6,6 +6,9 @@ contract Provider {
     // 의료행위 주체
     address public owner;
     string public facilityName;
+    string public clinicalSpecialty;
+
+    event ClaimIssued(address providerOwner, string _type, uint cost, string description);
 
     struct IssuedClaim {
         string _type; // 의료행위, 주성분
@@ -24,9 +27,10 @@ contract Provider {
 
     IssuedClaim[] public claims;
 
-    constructor(address _owner, string _facilityName) public {
+    constructor(address _owner, string _facilityName, string _clinicalSpecialty) public {
         owner = _owner;
         facilityName = _facilityName;
+        clinicalSpecialty = _clinicalSpecialty;
     }
 
     function viewIssuedClaims() public view returns (IssuedClaim[] _claims) {
@@ -34,6 +38,7 @@ contract Provider {
     }
 
     function renderClaimForPatient(address patient, ClaimItem _claim) public {
+        emit ClaimIssued(msg.sender, _claim._type, _claim.cost, _claim.description);
         claims.push(IssuedClaim({
             patientAddr: patient,
             createdAt: now,
