@@ -7,11 +7,21 @@ const { adminAddress, httpProvider } = config
 
 const testAddr = adminAddress
 
-async function deployProviderContract(address, name) {
+async function deployProviderContract(
+  address,
+  name,
+  typeOfHospital,
+  clinicalSpecialty
+) {
   const web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
   let contractAddr
   try {
-    contractAddr = await deploy.provider(address, name)
+    contractAddr = await deploy.provider(
+      address,
+      name,
+      typeOfHospital,
+      clinicalSpecialty
+    )
   } catch (e) {
     console.log(e)
   }
@@ -23,19 +33,52 @@ async function testScript() {
 
   const contractAddr = await deployProviderContract(
     adminAddress,
-    "CDE Hospital"
+    "ABC 외과",
+    "의원",
+    "외과"
   )
 
   console.log(`Provider Contract deployed: ${contractAddr}`)
 
-  providerSDK.connect({
+  const asanHospital = new ProviderSDK()
+
+  asanHospital.connect({
+    networkConfig: {
+      host: "http://localhost",
+      port: 8545,
+      networkId: "*"
+    }
+  })
+
+  const asanContractHash = await asanHospital.createProviderIdentity({
+    name: "Asan Hospital",
+    typeOfHospital: "대형병원",
+    clinicalSpecialty: "종합",
+    address: adminAddress
+  })
+
+  // providerSDK.connect({
+  //   networkConfig: {
+  //     host: "http://localhost",
+  //     port: 8545,
+  //     networkId: "*"
+  //   }
+  // })
+
+  providerSDK.connectAsProvider({
     networkConfig: {
       host: "http://localhost",
       port: 8545,
       networkId: "*"
     },
-    connectAs: adminAddress,
-    providerContractTx: contractAddr
+    contractHash: contractAddr,
+    providerAccountAddr: adminAddress
+  })
+
+  await asanHospital.issueClaimForPatient(testAddr, {
+    type: "component",
+    cost: 99999,
+    description: "DDDDDDDDDD"
   })
 
   await providerSDK.issueClaimForPatient(testAddr, {
@@ -58,6 +101,8 @@ async function testScript() {
 
   const claims = await providerSDK.getAllIssuedClaims()
   console.log(claims)
+  const asanClaims = await asanHospital.getAllIssuedClaims()
+  console.log(asanClaims)
 }
 
 testScript()
