@@ -75,6 +75,8 @@ async function testScript() {
     providerAccountAddr: adminAddress
   })
 
+  // providerSDK.subscribeToAllEvents()
+
   await asanHospital.issueClaimForPatient(testAddr, {
     type: "component",
     cost: 99999,
