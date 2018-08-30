@@ -15,12 +15,12 @@ module.exports = {
       adminAddr
     )
   },
-  provider: (providerAddr, facilityName) => {
+  provider: (providerAddr, name, typeOfHospital, clinicalSpecialty) => {
     // Deploy provider contracts
     return sdk.deployContract(
       "./build/contracts/Provider.json",
       providerAddr,
-      [providerAddr, facilityName] // arguments for constructor
+      [providerAddr, name, typeOfHospital, clinicalSpecialty] // arguments for constructor
     )
   },
   claim: () => {

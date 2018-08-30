@@ -1,7 +1,7 @@
 const Web3 = require("web3")
 const fs = require("fs")
 const config = require("../config")
-
+const deploy = require("./deploy")
 const { gas, gasPrice, adminAddress, httpProvider } = config
 
 const CompiledProviderContract = fs.readFileSync(
@@ -11,35 +11,70 @@ const CompiledProviderContract = fs.readFileSync(
 const ProviderContractABI = JSON.parse(CompiledProviderContract).abi
 
 class ProviderSDK {
-  connect({ networkConfig, providerContractTx, connectAs }) {
-    /**
-     * Connect to network
-     * If provider contract is already created
-     * store contract reference while connecting
-     */
+  connect({ networkConfig }) {
+    // Connect to network
     const { host, port, networkId } = networkConfig
 
     if (!host || !port || !networkId) {
       throw new Error("Insufficient parameters to connect to the network")
     }
-
-    if (!providerContractTx) {
-      throw new Error("No Provider Address Provided")
-    }
-    this.providerContractTx = providerContractTx
-    this.connectAs = connectAs
-
     this.web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
+  }
+
+  // When Provider is already created and exists in the network
+  connectAsProvider({ networkConfig, contractHash, providerAccountAddr }) {
+    const { host, port, networkId } = networkConfig
+
+    if (!host || !port || !networkId) {
+      throw new Error("Insufficient parameters to connect to the network")
+    }
+    this.web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
+
     this.providerContractRef = new this.web3.eth.Contract(
       ProviderContractABI,
-      providerContractTx,
-      { from: connectAs }
+      contractHash,
+      { from: providerAccountAddr }
     )
+  }
+
+  // Creates an instance of the Provider Contract
+  async createProviderIdentity({
+    name,
+    typeOfHospital,
+    clinicalSpecialty,
+    address
+  }) {
+    if (!this.web3) {
+      console.error(
+        "Not connected to any network; call the connect method first!"
+      )
+    }
+    let contractHash
+    try {
+      contractHash = await deploy.provider(
+        address,
+        name,
+        typeOfHospital,
+        clinicalSpecialty
+      )
+    } catch (e) {
+      console.log(e)
+    }
+
+    this.providerContractRef = new this.web3.eth.Contract(
+      ProviderContractABI,
+      contractHash,
+      { from: address }
+    )
+
+    return contractHash
   }
 
   getAllIssuedClaims() {
     console.log(
-      `Fetching all claims issued by provider ${this.providerContractTx}`
+      `Fetching all claims issued by provider ${
+        this.providerContractRef.options.address
+      }`
     )
     return this.providerContractRef.methods
       .viewIssuedClaims()
