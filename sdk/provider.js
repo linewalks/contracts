@@ -18,7 +18,7 @@ class ProviderSDK {
     if (!host || !port || !networkId) {
       throw new Error("Insufficient parameters to connect to the network")
     }
-    this.web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
+    this.web3 = new Web3(new Web3.providers.WebsocketProvider(httpProvider))
   }
 
   // When Provider is already created and exists in the network
@@ -28,7 +28,7 @@ class ProviderSDK {
     if (!host || !port || !networkId) {
       throw new Error("Insufficient parameters to connect to the network")
     }
-    this.web3 = new Web3(new Web3.providers.HttpProvider(httpProvider))
+    this.web3 = new Web3(new Web3.providers.WebsocketProvider(httpProvider))
 
     this.providerContractRef = new this.web3.eth.Contract(
       ProviderContractABI,
@@ -68,6 +68,15 @@ class ProviderSDK {
     )
 
     return contractHash
+  }
+
+  subscribeToAllEvents() {
+    this.providerContractRef.events.allEvents(
+      { fromBlock: 0 },
+      (err, result) => {
+        console.log(result)
+      }
+    )
   }
 
   getAllIssuedClaims() {
