@@ -6,6 +6,7 @@ contract Provider {
     // 의료행위 주체
     address public owner;
     string public facilityName;
+    string public typeOfHospital;
     string public clinicalSpecialty;
 
     event ClaimIssued(address providerOwner, string _type, uint cost, string description);
@@ -27,9 +28,10 @@ contract Provider {
 
     IssuedClaim[] public claims;
 
-    constructor(address _owner, string _facilityName, string _clinicalSpecialty) public {
+    constructor(address _owner, string _facilityName, string _typeOfHospital, string _clinicalSpecialty) public {
         owner = _owner;
         facilityName = _facilityName;
+        typeOfHospital = _typeOfHospital;
         clinicalSpecialty = _clinicalSpecialty;
     }
 
