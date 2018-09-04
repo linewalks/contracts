@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 contract PatientRegistrar {
     struct Patient {
         uint yearOfBirth;
+        string patientCode;
         string gender;
         bool isInitialized;
     }
@@ -17,7 +18,7 @@ contract PatientRegistrar {
         admin = msg.sender;
     }
 
-    function registerPatientToRegistrar(address patient, string gender, uint yearOfBirth) public {
+    function registerPatientToRegistrar(address patient, string patientCode, string gender, uint yearOfBirth) public {
         /*
         require(
             msg.sender == admin,
@@ -32,9 +33,11 @@ contract PatientRegistrar {
         
         patients[patient].gender = gender;
         patients[patient].yearOfBirth = yearOfBirth;
+        patients[patient].patientCode = patientCode;
         patients[patient].isInitialized = true;
         patientList.push(Patient({
             gender: gender,
+            patientCode: patientCode,
             yearOfBirth: yearOfBirth,
             isInitialized: true
         }));

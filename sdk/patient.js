@@ -37,14 +37,16 @@ class PatientSDK {
     )
   }
 
-  createPatient({ address, yearOfBirth, gender }) {
+  createPatient({ address, patientCode, yearOfBirth, gender }) {
     /**
      * Create Patient and adds it to PatientRegistrar
      */
-    console.log(`Adding patient with yob: ${yearOfBirth}, gender: ${gender}`)
+    console.log(
+      `Adding patient with patientCode: ${patientCode}, yob: ${yearOfBirth}, gender: ${gender}`
+    )
 
     return this.patientRegistrarRef.methods
-      .registerPatientToRegistrar(address, gender, yearOfBirth)
+      .registerPatientToRegistrar(address, patientCode, gender, yearOfBirth)
       .send({
         from: this.connectAs, // PatientRegistrar가 추가,
         gas,

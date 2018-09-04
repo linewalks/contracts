@@ -37,26 +37,31 @@ async function script() {
 
   // web3.fromWei(eth.getBalance(e), "ether")
   await psdk.createPatient({
+    patientCode: "A001",
     address: "0x95ced938f7991cd0dfcb48f0a06a40fa1af46ebc",
     yearOfBirth: 1988,
     gender: "female"
   })
   await psdk.createPatient({
+    patientCode: "A002",
     address: "0xaca94ef8bd5ffee41947b4585a84bda5a3d3da6e",
     yearOfBirth: 1952,
     gender: "female"
   })
   await psdk.createPatient({
+    patientCode: "B001",
     address: "0x28a8746e75304c0780e011bed21c72cd78cd535e",
     yearOfBirth: 1945,
     gender: "female"
   })
   await psdk.createPatient({
+    patientCode: "B002",
     address: "0x3e5e9111ae8eb78fe1cc3bb8915d5d461f3ef9a9",
     yearOfBirth: 1966,
     gender: "male"
   })
   await psdk.createPatient({
+    patientCode: "C001",
     address: "0x1df62f291b2e969fb0849d99d9ce41e2f137006e",
     yearOfBirth: 2001,
     gender: "female"

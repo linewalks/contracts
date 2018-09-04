@@ -24,6 +24,7 @@ class SDK {
       const contractJsonInterface = fs.readFileSync(pathToContract)
       const { abi, bytecode } = JSON.parse(contractJsonInterface)
       const ContractToDeploy = new this.web3.eth.Contract(abi)
+      console.log(bytecode.length)
       return ContractToDeploy.deploy({
         data: bytecode,
         arguments: args
